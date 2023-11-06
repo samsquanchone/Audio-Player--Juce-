@@ -7,7 +7,7 @@
 */
 
 #include <JuceHeader.h>
-#include "AudioThumbnailTutorial_01.h"
+#include "AudioPlayer.h"
 
 class Application    : public juce::JUCEApplication
 {
@@ -15,12 +15,12 @@ public:
     //==============================================================================
     Application() = default;
 
-    const juce::String getApplicationName() override       { return "AudioThumbnailTutorial"; }
+    const juce::String getApplicationName() override       { return "AudioPlayer"; }
     const juce::String getApplicationVersion() override    { return "1.0.0"; }
 
     void initialise (const juce::String&) override
     {
-        mainWindow.reset (new MainWindow ("AudioThumbnailTutorial", new MainContentComponent, *this));
+        mainWindow.reset (new MainWindow ("AudioPlayer", new MainContentComponent, *this));
     }
 
     void shutdown() override                         { mainWindow = nullptr; }

@@ -5,9 +5,15 @@
               addUsingNamespaceToJuceHeader="1" id="w27gQA" jucerFormatVersion="1">
   <MAINGROUP id="DkeEdB" name="AudioPlayer">
     <GROUP id="{08776973-0656-C4E3-4575-F47BD3597992}" name="Source">
+      <FILE id="eB4ede" name="PlaybackPosition.cpp" compile="1" resource="0"
+            file="Source/PlaybackPosition.cpp"/>
+      <FILE id="oap1Zb" name="PlaybackPosition.h" compile="0" resource="0"
+            file="Source/PlaybackPosition.h"/>
+      <FILE id="qAvzFl" name="Waveform.cpp" compile="1" resource="0" file="Source/Waveform.cpp"/>
+      <FILE id="pkKcYn" name="Waveform.h" compile="0" resource="0" file="Source/Waveform.h"/>
       <FILE id="Xolf6t" name="Main.cpp" compile="1" resource="0" file="Source/Main.cpp"/>
-      <FILE id="irFj6Q" name="AudioThumbnailTutorial_01.h" compile="0" resource="0"
-            file="Source/AudioThumbnailTutorial_01.h"/>
+      <FILE id="vGM9kn" name="AudioPlayer.cpp" compile="1" resource="0" file="Source/AudioPlayer.cpp"/>
+      <FILE id="irFj6Q" name="AudioPlayer.h" compile="0" resource="0" file="Source/AudioPlayer.h"/>
     </GROUP>
   </MAINGROUP>
   <MODULES>
