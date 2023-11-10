@@ -30,7 +30,7 @@ PlayBackPosition::~PlayBackPosition()
 
 void PlayBackPosition::resized()
 {
-    timeLabel.setBounds(10, 100, getWidth() - 20, getHeight());
+    timeLabel.setBounds(10, 50, getWidth() - 20, getHeight());
 }
 
 

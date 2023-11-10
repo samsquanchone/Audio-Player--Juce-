@@ -99,10 +99,8 @@ void WaveForm::changeListenerCallback(juce::ChangeBroadcaster* source)
     if (source == &thumbnail)       thumbnailChanged();
 }
 
-
-
-
 void WaveForm::thumbnailChanged()
 {
       repaint();
 }
+ 

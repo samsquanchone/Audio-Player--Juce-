@@ -94,12 +94,12 @@ void MainContentComponent::resized()
 
       */
 
-    juce::Rectangle<int> thumbnailBounds(10, 100, getWidth() - 20, getHeight() - 120);
+    juce::Rectangle<int> thumbnailBounds(10, 100, getWidth() - 20, getHeight() - 200);
 
 
     waveForm.setBounds(thumbnailBounds);
-    transportControl.setBounds(thumbnailBounds);
-    // playbackPosition.setBounds(thumbnailBounds);
+    transportControl.setBounds(10, 50, getWidth() - 20, getHeight());
+    
 }
 
 void MainContentComponent::changeListenerCallback(juce::ChangeBroadcaster* source)
@@ -109,9 +109,9 @@ void MainContentComponent::changeListenerCallback(juce::ChangeBroadcaster* sourc
         //Note if we get this refactoring to work, maybe use a getter, so we can keep state private!
         if (transportSource.isPlaying())
             transportControl.changeState(Playing);
-        else if ((transportControl.state == Stopping) || (transportControl.state == Playing))
+        else if ((transportControl.GetTransportState() == Stopping) || (transportControl.GetTransportState() == Playing))
             transportControl.changeState(Stopped);
-        else if (Pausing == transportControl.state)
+        else if (Pausing == transportControl.GetTransportState())
             transportControl.changeState(Paused);
     }
 }
