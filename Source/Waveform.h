@@ -46,6 +46,7 @@ private:
 
     void thumbnailChanged();
    
+    
 
     juce::AudioThumbnail thumbnail;
     Label fileNameLabel;
