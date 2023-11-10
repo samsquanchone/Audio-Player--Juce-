@@ -49,7 +49,8 @@
 
 #include <JuceHeader.h>
 #include "Waveform.h"
-#include "PlaybackPosition.h"
+#include "TransportControl.h"
+//#include "PlaybackPosition.h"
 
 
 
@@ -60,24 +61,24 @@ class MainContentComponent : public juce::AudioAppComponent,
 {
 public:
     MainContentComponent();
-        
+
 
     ~MainContentComponent() override;
-    
+
     void prepareToPlay(int samplesPerBlockExpected, double sampleRate) override;
- 
+
     void getNextAudioBlock(const juce::AudioSourceChannelInfo& bufferToFill) override;
-   
+
     void releaseResources() override;
-  
+
     void resized() override;
-   
+
 
     void changeListenerCallback(juce::ChangeBroadcaster* source) override;
-    
+
 
 private:
-    enum TransportState
+    /*enum TransportState
     {
         Stopped,
         Starting,
@@ -86,48 +87,52 @@ private:
         Pausing,
         Paused
     };
+    */
 
+    //void changeState(TransportState newState);
 
-    void changeState(TransportState newState);
-    
 
     void transportSourceChanged();
-    
+
 
 
     void openButtonClicked();
-  
 
+    /*
 
     void updateToggleState(juce::Button* button, juce::String name);
-   
+
 
     void setLoopingState(bool shouldLoop);
-    
+
 
     void playButtonClicked();
-    
+
     void stopButtonClicked();
-    
+    */
+
+
 
     //==========================================================================
     juce::TextButton openButton;
-    juce::TextButton playButton;
-    juce::TextButton stopButton;
+    /* juce::TextButton playButton;
+     juce::TextButton stopButton;
 
-    juce::ToggleButton loopingToggle;
-    juce::Label toggleLabel;
-
+     juce::ToggleButton loopingToggle;
+     juce::Label toggleLabel;
+     */
 
     std::unique_ptr<juce::FileChooser> chooser;
 
     juce::AudioFormatManager formatManager;                    // [3]
     std::unique_ptr<juce::AudioFormatReaderSource> readerSource;
     juce::AudioTransportSource transportSource;
-    TransportState state;
+    TransportControl transportControl;
+    //TransportState state;
     juce::AudioThumbnailCache thumbnailCache;                  // [1]
     WaveForm waveForm;                      // [2]
-    PlayBackPosition playbackPosition;
+
+    //PlayBackPosition playbackPosition;
 
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(MainContentComponent)

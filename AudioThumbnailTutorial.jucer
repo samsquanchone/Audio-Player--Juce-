@@ -5,6 +5,10 @@
               addUsingNamespaceToJuceHeader="1" id="w27gQA" jucerFormatVersion="1">
   <MAINGROUP id="DkeEdB" name="AudioPlayer">
     <GROUP id="{08776973-0656-C4E3-4575-F47BD3597992}" name="Source">
+      <FILE id="OzOwoe" name="TransportControl.cpp" compile="1" resource="0"
+            file="Source/TransportControl.cpp"/>
+      <FILE id="ELOzdb" name="TransportControl.h" compile="0" resource="0"
+            file="Source/TransportControl.h"/>
       <FILE id="eB4ede" name="PlaybackPosition.cpp" compile="1" resource="0"
             file="Source/PlaybackPosition.cpp"/>
       <FILE id="oap1Zb" name="PlaybackPosition.h" compile="0" resource="0"
