@@ -12,6 +12,7 @@
 #pragma once
 #include <JuceHeader.h>
 #include "PlaybackPosition.h"
+#include "WaveformControls.h"
 
 enum TransportState
 {
@@ -28,6 +29,8 @@ public:
     
     //Consrtuctor used to pass ref to transport source
     TransportControl(juce::AudioTransportSource& _transportSource, std::unique_ptr<juce::AudioFormatReaderSource>& const _readerSource);
+
+    ~TransportControl();
      
     void changeState(TransportState newState);
     
@@ -57,6 +60,9 @@ private:
     juce::AudioTransportSource& transportSource;
     //==========================================================================
    // juce::TextButton openButton;
+
+    CustomButtons otherLookandFeel;
+    StopButton stopButtonLookandFeel;
     juce::TextButton playButton;
     juce::TextButton stopButton;
     TransportState state;
@@ -65,6 +71,8 @@ private:
 
 
     PlayBackPosition playbackPosition;
+
+    
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(TransportControl)
 };
