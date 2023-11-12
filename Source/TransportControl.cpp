@@ -11,7 +11,7 @@
 #include "TransportControl.h"
 //Consrtuctor used to pass ref to transport source
 TransportControl::TransportControl(juce::AudioTransportSource& _transportSource, std::unique_ptr<juce::AudioFormatReaderSource>& const _readerSource)
-    : transportSource(_transportSource), state(Stopped), playbackPosition(transportSource), readerSource(_readerSource), previousState(Stopped)
+    : transportSource(_transportSource), state(Stopped), playbackPosition(transportSource), readerSource(_readerSource)
 {
     
 
@@ -35,10 +35,22 @@ TransportControl::TransportControl(juce::AudioTransportSource& _transportSource,
     rewindButton.setColour(juce::TextButton::buttonColourId, juce::Colours::grey);
     rewindButton.setEnabled(false);
 
+    addAndMakeVisible(&nextSongButton);
+   // rewindButton.onClick = [this] { rewindButtonClicked(); };
+    nextSongButton.setColour(juce::TextButton::buttonColourId, juce::Colours::grey);
+    nextSongButton.setEnabled(false);
+
+    addAndMakeVisible(&previousSongButton);
+    // rewindButton.onClick = [this] { rewindButtonClicked(); };
+    previousSongButton.setColour(juce::TextButton::buttonColourId, juce::Colours::grey);
+    previousSongButton.setEnabled(false);
+
     stopButton.setLookAndFeel(&stopButtonLookandFeel);
     playButton.setLookAndFeel(&otherLookandFeel);
     fastForwardButton.setLookAndFeel(&fastForwardButtonLookAndFeel);
     rewindButton.setLookAndFeel(&rewindButtonLookAndFeel);
+    nextSongButton.setLookAndFeel(&nextSongButtonLookAndFeel);
+    previousSongButton.setLookAndFeel(&previousSongLookAndFeel);
 
     addAndMakeVisible(playbackPosition);
 
@@ -66,7 +78,7 @@ void TransportControl::changeState(TransportState newState)
     if (state != newState)
     {
         state = newState;
-        previousState = state;
+       
 
         switch (state)
         {
@@ -145,6 +157,8 @@ void TransportControl::resized()
     playButton.setBounds(70, 0, (getWidth() * 10) / 100, 20);
     stopButton.setBounds(110, 0, (getWidth() * 10) / 100, 20);
     fastForwardButton.setBounds(150, 0, (getWidth() * 10) / 100, 20);
+    nextSongButton.setBounds(210, 0, (getWidth() * 10) / 100, 20);
+    previousSongButton.setBounds(300, 0, (getWidth() * 10) / 100, 20);
     //rewindButton.setBounds(170, 0, (getWidth() * 10) / 100, 20);
 
     loopingToggle.setBounds(100, getHeight() - 100, 40, 20);

@@ -170,3 +170,83 @@ public:
 
 
 };
+
+/// <summary>
+/// Idea for this class is to do similar to the rewind and fastfoward button, but instead of the second triangle, we will draw a narrow high rectangle 
+/// </summary>
+class MoveToNextSongButton : public juce::LookAndFeel_V4
+{
+    void drawButtonBackground(Graphics& g, Button& button, const Colour& backgroundColour, bool shouldDrawButtonAsHighlighted, bool shouldDrawButtonAsDown) override
+    {
+        const int x = 0;
+        const int y = 0;
+        const int width = button.getWidth();
+        const int height = button.getHeight();
+
+        const float indent = 2.0f;
+        const int cornerSize = jmin(roundToInt(width * 0.4), roundToInt(height * 0.4));
+
+
+
+        Path p;
+        //p.addRoundedRectangle(indent, indent, width - indent * 2.0f, height - indent * 2.0f, (float)cornerSize);
+
+        //Draw play button (triangle)
+        p.addTriangle(width/2, height / 2, width, y, width, height);
+
+        p.addRectangle(juce::Rectangle<int>(width / 2, y, (width * 10) / 100, height));
+
+        Colour bc(backgroundColour.withMultipliedSaturation(2));
+
+        //Briefly set colour of button to purple when pressed
+        if (button.isMouseButtonDown())
+        {
+            bc = juce::Colours::purple;
+        }
+
+
+        g.setColour(bc);
+        g.fillPath(p);
+    }
+
+
+};
+
+class MoveToPreviousSongButton : public juce::LookAndFeel_V4
+{
+    void drawButtonBackground(Graphics& g, Button& button, const Colour& backgroundColour, bool shouldDrawButtonAsHighlighted, bool shouldDrawButtonAsDown) override
+    {
+        const int x = 0;
+        const int y = 0;
+        const int width = button.getWidth();
+        const int height = button.getHeight();
+
+        const float indent = 2.0f;
+        const int cornerSize = jmin(roundToInt(width * 0.4), roundToInt(height * 0.4));
+
+
+
+        Path p;
+        //p.addRoundedRectangle(indent, indent, width - indent * 2.0f, height - indent * 2.0f, (float)cornerSize);
+
+        //Draw play button (triangle)
+        p.addTriangle(x, y, x, height, width / 2, height / 2);
+
+        p.addRectangle(juce::Rectangle<int>(width/2, y, (width * 10) / 100, height));
+
+        Colour bc(backgroundColour.withMultipliedSaturation(2));
+
+        //Briefly set colour of button to purple when pressed
+        if (button.isMouseButtonDown())
+        {
+            bc = juce::Colours::purple;
+        }
+
+
+        g.setColour(bc);
+        g.fillPath(p);
+    }
+
+
+};
+

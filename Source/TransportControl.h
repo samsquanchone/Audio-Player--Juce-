@@ -75,10 +75,14 @@ private:
     StopButton stopButtonLookandFeel;
     FastForwardButton fastForwardButtonLookAndFeel;
     RewindButton rewindButtonLookAndFeel;
+    MoveToNextSongButton nextSongButtonLookAndFeel;
+    MoveToPreviousSongButton previousSongLookAndFeel;
     juce::TextButton playButton;
     juce::TextButton stopButton;
     juce::TextButton fastForwardButton;
     juce::TextButton rewindButton;
+    juce::TextButton nextSongButton;
+    juce::TextButton previousSongButton;
     TransportState state;
     juce::ToggleButton loopingToggle;
     juce::Label toggleLabel;
