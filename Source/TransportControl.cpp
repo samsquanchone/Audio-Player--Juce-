@@ -11,27 +11,34 @@
 #include "TransportControl.h"
 //Consrtuctor used to pass ref to transport source
 TransportControl::TransportControl(juce::AudioTransportSource& _transportSource, std::unique_ptr<juce::AudioFormatReaderSource>& const _readerSource)
-    : transportSource(_transportSource), state(Stopped), playbackPosition(transportSource), readerSource(_readerSource)
+    : transportSource(_transportSource), state(Stopped), playbackPosition(transportSource), readerSource(_readerSource), previousState(Stopped)
 {
-    /*  addAndMakeVisible(&openButton);
-      openButton.setButtonText("Open...");
-      openButton.onClick = [this] { openButtonClicked(); };
-      */
+    
 
     addAndMakeVisible(&playButton);
-   // playButton.setButtonText("Play");
     playButton.onClick = [this] { playButtonClicked(); };
-    playButton.setColour(juce::TextButton::buttonColourId, juce::Colours::green);
+    playButton.setColour(juce::TextButton::buttonColourId, juce::Colours::grey);
     playButton.setEnabled(false);
 
     addAndMakeVisible(&stopButton);
-  //  stopButton.setButtonText("Stop");
     stopButton.onClick = [this] { stopButtonClicked(); };
-    stopButton.setColour(juce::TextButton::buttonColourId, juce::Colours::red);
+    stopButton.setColour(juce::TextButton::buttonColourId, juce::Colours::grey);
     stopButton.setEnabled(false);
+
+    addAndMakeVisible(&fastForwardButton);
+    fastForwardButton.onClick = [this] { fastForwardButtonClicked(); };
+    fastForwardButton.setColour(juce::TextButton::buttonColourId, juce::Colours::grey);
+    fastForwardButton.setEnabled(false);
+
+    addAndMakeVisible(&rewindButton);
+    rewindButton.onClick = [this] { rewindButtonClicked(); };
+    rewindButton.setColour(juce::TextButton::buttonColourId, juce::Colours::grey);
+    rewindButton.setEnabled(false);
 
     stopButton.setLookAndFeel(&stopButtonLookandFeel);
     playButton.setLookAndFeel(&otherLookandFeel);
+    fastForwardButton.setLookAndFeel(&fastForwardButtonLookAndFeel);
+    rewindButton.setLookAndFeel(&rewindButtonLookAndFeel);
 
     addAndMakeVisible(playbackPosition);
 
@@ -44,14 +51,12 @@ TransportControl::TransportControl(juce::AudioTransportSource& _transportSource,
     toggleLabel.setColour(juce::Label::textColourId, juce::Colours::orange);
     toggleLabel.setJustificationType(juce::Justification::right);
 
-
-
-
 }
 
 TransportControl::~TransportControl()
 {
     setLookAndFeel(nullptr);
+    stopTimer();
 }
 
 void TransportControl::changeState(TransportState newState)
@@ -61,61 +66,86 @@ void TransportControl::changeState(TransportState newState)
     if (state != newState)
     {
         state = newState;
+        previousState = state;
 
         switch (state)
         {
         case Stopped:                           // [3]
             stopButton.setEnabled(false);
+            rewindButton.setEnabled(false);
+            fastForwardButton.setEnabled(false);
             transportSource.setPosition(0.0);
-          //  playButton.setButtonText("Play");
             playButton.setColour(juce::TextButton::buttonColourId,juce::Colours::grey);
             stopButton.setColour(juce::TextButton::buttonColourId, juce::Colours::red);
-           // stopButton.setButtonText("Stop");  // [5]
+      
+            stopTimer();
             break;
 
         case Starting:                          // [4]
             transportSource.start();
             playbackPosition.resumePlayback();
+            rewindButton.setEnabled(true);
+            fastForwardButton.setEnabled(true);
+            stopTimer();
             break;
 
         case Playing:
-          //  playButton.setButtonText("Pause");
-          //  stopButton.setButtonText("Stop");  // [5]
             playButton.setColour(juce::TextButton::buttonColourId, juce::Colours::green);
             stopButton.setColour(juce::TextButton::buttonColourId, juce::Colours::grey);
+            fastForwardButton.setColour(juce::TextButton::buttonColourId, juce::Colours::grey);
+            rewindButton.setColour(juce::TextButton::buttonColourId, juce::Colours::grey);
             stopButton.setEnabled(true);
+            stopTimer();
 
             break;
 
         case Stopping:                          // [6]
             transportSource.stop();
             playbackPosition.pausePlayback();
+            fastForwardButton.setColour(juce::TextButton::buttonColourId, juce::Colours::grey);
+            rewindButton.setColour(juce::TextButton::buttonColourId, juce::Colours::grey);
+            stopTimer();
             break;
 
         case Pausing:
             transportSource.stop();
+            stopTimer();
             break;
 
         case Paused:
-         //   playButton.setButtonText("Resume");
-         //   stopButton.setButtonText("Restart");
-
+              playButton.setColour(juce::TextButton::buttonColourId, juce::Colours::red);
+              stopTimer();
             break;
 
+        case FastFoward:
+            startTimer(250);
+            fastForwardButton.setColour(juce::TextButton::buttonColourId, juce::Colours::green);
+            rewindButton.setColour(juce::TextButton::buttonColourId, juce::Colours::grey);
+            break;
 
+        case Rewind:
+            startTimer(250);
+            rewindButton.setColour(juce::TextButton::buttonColourId, juce::Colours::green);
+            fastForwardButton.setColour(juce::TextButton::buttonColourId, juce::Colours::grey);
+
+            break;
 
         default:
             jassertfalse;
             break;
 
         }
+
     }
 }
 
 void TransportControl::resized()
 {
-    playButton.setBounds(10, 0, (getWidth() * 10) / 100, 20);
-    stopButton.setBounds(10, 20, (getWidth() * 10) / 100, 20);
+    rewindButton.setBounds(0, 0, (getWidth() * 10) / 100, 20);
+    playButton.setBounds(70, 0, (getWidth() * 10) / 100, 20);
+    stopButton.setBounds(110, 0, (getWidth() * 10) / 100, 20);
+    fastForwardButton.setBounds(150, 0, (getWidth() * 10) / 100, 20);
+    //rewindButton.setBounds(170, 0, (getWidth() * 10) / 100, 20);
 
     loopingToggle.setBounds(100, getHeight() - 100, 40, 20);
     juce::Rectangle<int> thumbnailBounds(0, 50, getParentWidth() - 20, getHeight() - 200);
@@ -130,6 +160,10 @@ TransportState TransportControl::GetTransportState()
 void TransportControl::FileLoaded()
 {
     playButton.setEnabled(true);
+    fastForwardButton.setEnabled(true);
+    rewindButton.setEnabled(true);
+
+    changeState(Starting);
 }
 
 
@@ -159,7 +193,9 @@ void TransportControl::playButtonClicked()
 {
     if ((state == Stopped) || (state == Paused))
         changeState(Starting);
-    else if (state == Playing)
+    if (state == FastFoward || state == Rewind)
+        changeState(Playing);
+    else if (state == Playing) 
         changeState(Pausing);
 }
 
@@ -169,4 +205,28 @@ void TransportControl::stopButtonClicked()
         changeState(Stopped);
     else
         changeState(Stopping);
+}
+
+void TransportControl::rewindButtonClicked()
+{
+    changeState(Rewind);
+}
+
+void TransportControl::fastForwardButtonClicked()
+{
+    changeState(FastFoward);
+}
+
+void TransportControl::timerCallback()
+{
+    switch (state)
+    {
+    case FastFoward:
+        transportSource.setPosition(transportSource.getCurrentPosition() + 1);
+        break;
+
+    case Rewind:
+        transportSource.setPosition(transportSource.getCurrentPosition() - 1); 
+        break;
+    }
 }

@@ -32,11 +32,13 @@ public:
    
     void resumePlayback();
     
+   
 
 private:
 
     void timerCallback() override;
     
+   
     Label timeLabel;
     AudioTransportSource& transportSource;
 

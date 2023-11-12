@@ -20,6 +20,8 @@ PlayBackPosition::PlayBackPosition(AudioTransportSource& _transportSource)
     timeLabel.setColour(juce::Label::textColourId, juce::Colours::lightgreen);
     timeLabel.setJustificationType(juce::Justification::centred);
 
+    timeLabel.setInterceptsMouseClicks(false, true);
+
     startTimer(40);
 }
 
@@ -76,7 +78,6 @@ void PlayBackPosition::resumePlayback()
 {
     startTimer(40);
 }
-
 
 
 void PlayBackPosition::timerCallback()

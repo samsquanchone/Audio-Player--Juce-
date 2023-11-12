@@ -21,9 +21,13 @@ enum TransportState
     Playing,
     Stopping,
     Pausing,
-    Paused
+    Paused,
+    FastFoward,
+    Rewind
 };
-class TransportControl : public juce::Component
+
+
+class TransportControl : public juce::Component, private juce::Timer
 {
 public:
     
@@ -54,6 +58,12 @@ private:
     void playButtonClicked();
    
     void stopButtonClicked();
+
+    void rewindButtonClicked();
+    
+    void fastForwardButtonClicked();
+
+    void timerCallback() override;
     
 
     std::unique_ptr<juce::AudioFormatReaderSource>& readerSource;
@@ -63,8 +73,12 @@ private:
 
     CustomButtons otherLookandFeel;
     StopButton stopButtonLookandFeel;
+    FastForwardButton fastForwardButtonLookAndFeel;
+    RewindButton rewindButtonLookAndFeel;
     juce::TextButton playButton;
     juce::TextButton stopButton;
+    juce::TextButton fastForwardButton;
+    juce::TextButton rewindButton;
     TransportState state;
     juce::ToggleButton loopingToggle;
     juce::Label toggleLabel;
