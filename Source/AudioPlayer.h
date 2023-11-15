@@ -50,12 +50,12 @@
 #include <JuceHeader.h>
 #include "Waveform.h"
 #include "TransportControl.h"
-//#include "PlaybackPosition.h"
+#include "Song.h"
 
 
 
 //==============================================================================
-class MainContentComponent : public juce::AudioAppComponent,
+class MainContentComponent : public juce::AudioAppComponent, 
     private juce::ChangeListener
 
 {
@@ -78,51 +78,29 @@ public:
 
 
 private:
-    /*enum TransportState
-    {
-        Stopped,
-        Starting,
-        Playing,
-        Stopping,
-        Pausing,
-        Paused
-    };
-    */
-
-    //void changeState(TransportState newState);
-
+   
 
     void transportSourceChanged();
 
 
 
-    void openButtonClicked();
+    void openButtonClicked(); //For changing the current song
 
-    /*
+    void openAddFileToQueueButtonClicked(); //Will open up either same file chooser or new one (depending on performance) and will get a file from this operation and make unique a new song object which will call Song constructor with file
 
-    void updateToggleState(juce::Button* button, juce::String name);
+    juce::File getFile();
 
+    void checkIfSongHasFinished();
 
-    void setLoopingState(bool shouldLoop);
-
-
-    void playButtonClicked();
-
-    void stopButtonClicked();
-    */
-
-
-
+    void playNextSong();
+   
+    
     //==========================================================================
     juce::TextButton openButton;
-    /* juce::TextButton playButton;
-     juce::TextButton stopButton;
-
-     juce::ToggleButton loopingToggle;
-     juce::Label toggleLabel;
-     */
-
+    juce::TextButton openFileForQueueButton;
+   
     std::unique_ptr<juce::FileChooser> chooser;
+   
 
     juce::AudioFormatManager formatManager;                    // [3]
     std::unique_ptr<juce::AudioFormatReaderSource> readerSource;
@@ -132,7 +110,8 @@ private:
     juce::AudioThumbnailCache thumbnailCache;                  // [1]
     WaveForm waveForm;                      // [2]
 
-    //PlayBackPosition playbackPosition;
+    std::queue<std::unique_ptr<Song>> playlistContainer; //This holds a queue of all songs added to the playlist
+
 
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(MainContentComponent)
