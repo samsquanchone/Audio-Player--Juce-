@@ -94,6 +94,8 @@ private:
 
     void playNextSong();
 
+    void playPreviousSong();
+
     void timerCallback() override;
 
    
@@ -105,7 +107,8 @@ private:
    
     std::unique_ptr<juce::FileChooser> chooser;
     std::atomic<bool> hasSongFinished{ false };
-
+    int playlistPos{ 0 }; //We really want to refactor all playlist functions and probably even file handling (maybe look into observer pattern (or juces equiv))
+    bool isFirstTimePlayingFromPlaylist{ true };
     juce::AudioFormatManager formatManager;                    // [3]
     std::unique_ptr<juce::AudioFormatReaderSource> readerSource;
     juce::AudioTransportSource transportSource;
@@ -114,7 +117,7 @@ private:
     juce::AudioThumbnailCache thumbnailCache;                  // [1]
     WaveForm waveForm;                      // [2]
 
-    std::queue<std::unique_ptr<Song>> playlistContainer; //This holds a queue of all songs added to the playlist
+    std::vector<std::unique_ptr<Song>> playlistContainer; //This holds a queue of all songs added to the playlist
 
    
 

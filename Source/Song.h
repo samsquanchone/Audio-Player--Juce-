@@ -14,10 +14,11 @@
 struct Song
 {
 
-    Song(const juce::File& _file);
+    Song(const juce::File& _file, const unsigned int& _id);
 
 
     juce::File file;
     juce::String fileName;
+    unsigned int id;
 
 };

@@ -38,12 +38,12 @@ TransportControl::TransportControl(juce::AudioTransportSource& _transportSource,
     addAndMakeVisible(&nextSongButton);
    // rewindButton.onClick = [this] { rewindButtonClicked(); };
     nextSongButton.setColour(juce::TextButton::buttonColourId, juce::Colours::grey);
-    nextSongButton.setEnabled(false);
+    nextSongButton.setEnabled(true); //need to change to state enable / disable, j testing it works
 
     addAndMakeVisible(&previousSongButton);
     // rewindButton.onClick = [this] { rewindButtonClicked(); };
     previousSongButton.setColour(juce::TextButton::buttonColourId, juce::Colours::grey);
-    previousSongButton.setEnabled(false);
+    previousSongButton.setEnabled(true);  //need to change to state enable / disable, j testing it work
 
     stopButton.setLookAndFeel(&stopButtonLookandFeel);
     playButton.setLookAndFeel(&otherLookandFeel);
@@ -157,8 +157,9 @@ void TransportControl::resized()
     playButton.setBounds(70, 0, (getWidth() * 10) / 100, 20);
     stopButton.setBounds(110, 0, (getWidth() * 10) / 100, 20);
     fastForwardButton.setBounds(150, 0, (getWidth() * 10) / 100, 20);
-    nextSongButton.setBounds(210, 0, (getWidth() * 10) / 100, 20);
-    previousSongButton.setBounds(300, 0, (getWidth() * 10) / 100, 20);
+   
+    nextSongButton.setBounds(300, 0, (getWidth() * 10) / 100, 20);
+    previousSongButton.setBounds(210, 0, (getWidth() * 10) / 100, 20);
     //rewindButton.setBounds(170, 0, (getWidth() * 10) / 100, 20);
 
     loopingToggle.setBounds(100, getHeight() - 100, 40, 20);

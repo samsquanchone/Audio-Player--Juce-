@@ -43,7 +43,9 @@ MainContentComponent::MainContentComponent()
 
     startTimer(100);
  
+    transportControl.nextSongButton.onClick = [this] { playNextSong(); }; //this is coupled atm deffo wanna refactor it
 
+    transportControl.previousSongButton.onClick = [this] { playPreviousSong();  }; //this is coupled atm deffo wanna refactor it
    // transportSource.addChangeListener(&playNextSong());
     
 
@@ -52,10 +54,7 @@ MainContentComponent::MainContentComponent()
 MainContentComponent::~MainContentComponent()
 {
     shutdownAudio();
-    while (playlistContainer.empty() != true)
-    {
-        playlistContainer.pop();
-    }
+    playlistContainer.clear();
 
     stopTimer();
    
@@ -170,13 +169,10 @@ void MainContentComponent::openAddFileToQueueButtonClicked()
             if (file != juce::File{})
             {
 
-                playlistContainer.push(std::make_unique<Song>(file)); //Make entry unique and pass file into constructor
-
+                playlistContainer.push_back(std::make_unique<Song>(file, playlistContainer.size())); //Make entry unique and pass file into constructor, as well as vector size (for ID purposes)
 
                 Logger::outputDebugString(playlistContainer.front().get()->fileName);
                 Logger::outputDebugString(juce::String(playlistContainer.size()));
-
-               
             }
             
         });
@@ -197,22 +193,58 @@ void MainContentComponent::checkIfSongHasFinished()
 
 void MainContentComponent::playNextSong()
 {
-    auto file = playlistContainer.front().get()->file; //get file from current queue song object
-    
-    auto* reader = formatManager.createReaderFor(file);
-    if (reader != nullptr)
-    {
-        auto newSource = std::make_unique<juce::AudioFormatReaderSource>(reader, true);
-        transportSource.setSource(newSource.get(), 0, nullptr, reader->sampleRate);
-        transportControl.FileLoaded();
-        //playButton.setEnabled(true);
-        waveForm.setFile(file);                            // [7]
-        readerSource.reset(newSource.release());
-        transportSourceChanged();
-        hasSongFinished = false;
 
+    if (!readerSource->isLooping() && playlistPos + 1 < playlistContainer.size()) //actually! we may not want to do this here! think about it.... even if we are looping and we skip song, we probs wanna change the song lol!
+    {
+        if (!isFirstTimePlayingFromPlaylist) { playlistPos = playlistContainer[playlistPos].get()->id + 1; }
+        auto file = playlistContainer[playlistPos].get()->file; //get file from current queue song object
+
+        auto* reader = formatManager.createReaderFor(file);
+        if (reader != nullptr)
+        {
+            auto newSource = std::make_unique<juce::AudioFormatReaderSource>(reader, true);
+            transportSource.setSource(newSource.get(), 0, nullptr, reader->sampleRate);
+            transportControl.FileLoaded();
+            //playButton.setEnabled(true);
+            waveForm.setFile(file);                            // [7]
+            readerSource.reset(newSource.release());
+            transportSourceChanged();
+            hasSongFinished = false;
+
+            isFirstTimePlayingFromPlaylist = false;
+            //if (playlistPos == 0) { playlistPos += 1; }
+           // (playlistPos != 0)? playlistPos += playlistContainer[playlistPos].get()->id : playlistPos += 1; //Increment playlistpos, as it starts from zero, we need to check that it is not zero otherwise it will remian 0!
+        }
     }
 
+}
+
+void MainContentComponent::playPreviousSong()
+{
+    if (!readerSource->isLooping()) //actually! we may not want to do this here! think about it.... even if we are looping and we skip song, we probs wanna change the song lol!
+    {
+
+        if (playlistPos != 0) {
+            playlistPos = playlistContainer[playlistPos].get()->id - 1;  //Check the playlist pos is not == 0 (otherwise we will be trying to access an index that is out of range)
+
+            auto file = playlistContainer[playlistPos].get()->file; //get file from current queue song object
+
+            auto* reader = formatManager.createReaderFor(file);
+            if (reader != nullptr)
+            {
+                auto newSource = std::make_unique<juce::AudioFormatReaderSource>(reader, true);
+                transportSource.setSource(newSource.get(), 0, nullptr, reader->sampleRate);
+                transportControl.FileLoaded();
+                //playButton.setEnabled(true);
+                waveForm.setFile(file);                            // [7]
+                readerSource.reset(newSource.release());
+                transportSourceChanged();
+                hasSongFinished = false;
+
+
+            }
+        }
+    }
 }
 
 void MainContentComponent::timerCallback()

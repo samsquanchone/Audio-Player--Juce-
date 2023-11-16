@@ -10,8 +10,9 @@
 
 #include "Song.h"
 
-Song::Song(const juce::File& _file)
+Song::Song(const juce::File& _file, const unsigned& _id)
 {
     file = _file;
     fileName = file.getFileNameWithoutExtension();
+    id = _id;
 }

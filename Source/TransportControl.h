@@ -30,6 +30,9 @@ enum TransportState
 class TransportControl : public juce::Component, private juce::Timer
 {
 public:
+
+    juce::TextButton nextSongButton;
+    juce::TextButton previousSongButton;
     
     //Consrtuctor used to pass ref to transport source
     TransportControl(juce::AudioTransportSource& _transportSource, std::unique_ptr<juce::AudioFormatReaderSource>& const _readerSource);
@@ -83,8 +86,7 @@ private:
     juce::TextButton stopButton;
     juce::TextButton fastForwardButton;
     juce::TextButton rewindButton;
-    juce::TextButton nextSongButton;
-    juce::TextButton previousSongButton;
+  
     TransportState state;
     juce::ToggleButton loopingToggle;
     juce::Label toggleLabel;

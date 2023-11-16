@@ -174,7 +174,7 @@ public:
 /// <summary>
 /// Idea for this class is to do similar to the rewind and fastfoward button, but instead of the second triangle, we will draw a narrow high rectangle 
 /// </summary>
-class MoveToNextSongButton : public juce::LookAndFeel_V4
+class  MoveToPreviousSongButton : public juce::LookAndFeel_V4
 {
     void drawButtonBackground(Graphics& g, Button& button, const Colour& backgroundColour, bool shouldDrawButtonAsHighlighted, bool shouldDrawButtonAsDown) override
     {
@@ -212,7 +212,7 @@ class MoveToNextSongButton : public juce::LookAndFeel_V4
 
 };
 
-class MoveToPreviousSongButton : public juce::LookAndFeel_V4
+class MoveToNextSongButton : public juce::LookAndFeel_V4
 {
     void drawButtonBackground(Graphics& g, Button& button, const Colour& backgroundColour, bool shouldDrawButtonAsHighlighted, bool shouldDrawButtonAsDown) override
     {
