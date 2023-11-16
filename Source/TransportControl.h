@@ -43,8 +43,10 @@ public:
    
     TransportState GetTransportState();
   
-
+    //Base file to change current song (without playlist)
     void FileLoaded();
+
+    
  
 
 

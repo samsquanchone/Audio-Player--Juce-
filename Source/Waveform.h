@@ -50,7 +50,7 @@ private:
 
     juce::AudioThumbnail thumbnail;
     Label fileNameLabel;
-
+    
 
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(WaveForm)

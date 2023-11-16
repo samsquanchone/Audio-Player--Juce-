@@ -182,7 +182,6 @@ void TransportControl::FileLoaded()
 
 
 
-
 void TransportControl::updateToggleState(juce::Button* button, juce::String name)
 {
     auto state = button->getToggleState();

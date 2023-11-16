@@ -41,6 +41,10 @@ MainContentComponent::MainContentComponent()
 
     setAudioChannels(2, 2);
 
+    startTimer(100);
+ 
+
+   // transportSource.addChangeListener(&playNextSong());
     
 
 }
@@ -53,7 +57,7 @@ MainContentComponent::~MainContentComponent()
         playlistContainer.pop();
     }
 
-    
+    stopTimer();
    
     
 }
@@ -66,11 +70,19 @@ void MainContentComponent::prepareToPlay(int samplesPerBlockExpected, double sam
 void MainContentComponent::getNextAudioBlock(const juce::AudioSourceChannelInfo& bufferToFill)
 {
     if (readerSource.get() == nullptr)
+    {
         bufferToFill.clearActiveBufferRegion();
+    }
     else
-    
+    {
         transportSource.getNextAudioBlock(bufferToFill);
-    
+    }
+    if (readerSource.get() != nullptr && transportSource.hasStreamFinished())
+    {
+        hasSongFinished = true; //Obviously is not thread safe to call our next song function here, therefore we use an atomic flag to ensure we can change song
+    }
+
+
 }
 
 void MainContentComponent::releaseResources()
@@ -164,21 +176,7 @@ void MainContentComponent::openAddFileToQueueButtonClicked()
                 Logger::outputDebugString(playlistContainer.front().get()->fileName);
                 Logger::outputDebugString(juce::String(playlistContainer.size()));
 
-                //auto* reader = formatManager.createReaderFor(file);
-
-               /* if (reader != nullptr)
-                {
-                    auto newSource = std::make_unique<juce::AudioFormatReaderSource>(reader, true);
-                    playlistContainer.push(std::make_unique<Song>(file)); //Make entry unique and pass file into constructor
-  
-                   
-                    Logger::outputDebugString(playlistContainer.front().get()->fileName);
-                    Logger::outputDebugString(juce::String(playlistContainer.size()));
-                    
-                }
-                */
-
-              //  checkIfSongHasFinished();
+               
             }
             
         });
@@ -194,8 +192,7 @@ juce::File MainContentComponent::getFile()
 void MainContentComponent::checkIfSongHasFinished()
 {
     if (transportSource.hasStreamFinished()) { playNextSong(); }
-
-    playNextSong();
+    
 }
 
 void MainContentComponent::playNextSong()
@@ -212,7 +209,17 @@ void MainContentComponent::playNextSong()
         waveForm.setFile(file);                            // [7]
         readerSource.reset(newSource.release());
         transportSourceChanged();
+        hasSongFinished = false;
 
     }
 
 }
+
+void MainContentComponent::timerCallback()
+{
+    if (hasSongFinished)
+    {
+        playNextSong();
+    }
+}
+

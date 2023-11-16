@@ -56,7 +56,7 @@
 
 //==============================================================================
 class MainContentComponent : public juce::AudioAppComponent, 
-    private juce::ChangeListener
+    private juce::ChangeListener, private juce::Timer
 
 {
 public:
@@ -93,6 +93,10 @@ private:
     void checkIfSongHasFinished();
 
     void playNextSong();
+
+    void timerCallback() override;
+
+   
    
     
     //==========================================================================
@@ -100,7 +104,7 @@ private:
     juce::TextButton openFileForQueueButton;
    
     std::unique_ptr<juce::FileChooser> chooser;
-   
+    std::atomic<bool> hasSongFinished{ false };
 
     juce::AudioFormatManager formatManager;                    // [3]
     std::unique_ptr<juce::AudioFormatReaderSource> readerSource;
@@ -112,7 +116,7 @@ private:
 
     std::queue<std::unique_ptr<Song>> playlistContainer; //This holds a queue of all songs added to the playlist
 
-
+   
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(MainContentComponent)
 };
