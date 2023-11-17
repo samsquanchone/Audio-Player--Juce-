@@ -112,6 +112,8 @@ private:
     juce::AudioFormatManager formatManager;                    // [3]
     std::unique_ptr<juce::AudioFormatReaderSource> readerSource;
     juce::AudioTransportSource transportSource;
+    juce::ResamplingAudioSource resampledSource; //To change pitch ect ect...
+    juce::MixerAudioSource mixerSource;
     TransportControl transportControl;
     //TransportState state;
     juce::AudioThumbnailCache thumbnailCache;                  // [1]

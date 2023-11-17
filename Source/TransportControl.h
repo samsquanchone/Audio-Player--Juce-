@@ -12,7 +12,7 @@
 #pragma once
 #include <JuceHeader.h>
 #include "PlaybackPosition.h"
-#include "WaveformControls.h"
+#include "CustomUI.h"
 
 enum TransportState
 {

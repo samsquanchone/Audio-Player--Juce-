@@ -17,7 +17,7 @@ MainContentComponent::MainContentComponent()
     thumbnailCache(5),                            // [4]
     waveForm(512, formatManager, thumbnailCache), // [5]
 
-    transportControl(transportSource, readerSource)
+    transportControl(transportSource, readerSource), resampledSource(&transportSource, true, 2)
 {
 
     addAndMakeVisible(&openButton);
@@ -55,6 +55,9 @@ MainContentComponent::~MainContentComponent()
 {
     shutdownAudio();
     playlistContainer.clear();
+    transportSource.releaseResources();
+    resampledSource.releaseResources();
+    mixerSource.releaseResources();
 
     stopTimer();
    
@@ -64,10 +67,17 @@ MainContentComponent::~MainContentComponent()
 void MainContentComponent::prepareToPlay(int samplesPerBlockExpected, double sampleRate)
 {
     transportSource.prepareToPlay(samplesPerBlockExpected, sampleRate);
+    ///* Below are just an example on how to set up pitch control (COULD BE USED FOR NEXT PROJECT! DJ APP)*/
+    resampledSource.prepareToPlay(samplesPerBlockExpected, sampleRate);
+    mixerSource.prepareToPlay(samplesPerBlockExpected, sampleRate);
+    resampledSource.setResamplingRatio(1);
+    
+  
 }
 
 void MainContentComponent::getNextAudioBlock(const juce::AudioSourceChannelInfo& bufferToFill)
 {
+    
     if (readerSource.get() == nullptr)
     {
         bufferToFill.clearActiveBufferRegion();
@@ -75,6 +85,7 @@ void MainContentComponent::getNextAudioBlock(const juce::AudioSourceChannelInfo&
     else
     {
         transportSource.getNextAudioBlock(bufferToFill);
+       
     }
     if (readerSource.get() != nullptr && transportSource.hasStreamFinished())
     {
@@ -87,6 +98,7 @@ void MainContentComponent::getNextAudioBlock(const juce::AudioSourceChannelInfo&
 void MainContentComponent::releaseResources()
 {
     transportSource.releaseResources();
+    resampledSource.releaseResources();
 }
 
 void MainContentComponent::resized()
@@ -143,6 +155,8 @@ void MainContentComponent::openButtonClicked()
                 {
                     auto newSource = std::make_unique<juce::AudioFormatReaderSource>(reader, true);
                     transportSource.setSource(newSource.get(), 0, nullptr, reader->sampleRate);
+
+                    mixerSource.addInputSource(&resampledSource, false); //Example of how to do pitch control, requires adding mixer source
                     transportControl.FileLoaded();
                     //playButton.setEnabled(true);
                     waveForm.setFile(file);                            // [7]
@@ -212,8 +226,7 @@ void MainContentComponent::playNextSong()
             hasSongFinished = false;
 
             isFirstTimePlayingFromPlaylist = false;
-            //if (playlistPos == 0) { playlistPos += 1; }
-           // (playlistPos != 0)? playlistPos += playlistContainer[playlistPos].get()->id : playlistPos += 1; //Increment playlistpos, as it starts from zero, we need to check that it is not zero otherwise it will remian 0!
+            
         }
     }
 
@@ -234,6 +247,7 @@ void MainContentComponent::playPreviousSong()
             {
                 auto newSource = std::make_unique<juce::AudioFormatReaderSource>(reader, true);
                 transportSource.setSource(newSource.get(), 0, nullptr, reader->sampleRate);
+             
                 transportControl.FileLoaded();
                 //playButton.setEnabled(true);
                 waveForm.setFile(file);                            // [7]

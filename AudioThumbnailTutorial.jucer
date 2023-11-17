@@ -5,6 +5,8 @@
               addUsingNamespaceToJuceHeader="1" id="w27gQA" jucerFormatVersion="1">
   <MAINGROUP id="DkeEdB" name="AudioPlayer">
     <GROUP id="{08776973-0656-C4E3-4575-F47BD3597992}" name="Source">
+      <FILE id="CVwkKD" name="CustomUI.cpp" compile="1" resource="0" file="Source/CustomUI.cpp"/>
+      <FILE id="nVUa36" name="CustomUI.h" compile="0" resource="0" file="Source/CustomUI.h"/>
       <FILE id="EgboVc" name="Song.cpp" compile="1" resource="0" file="Source/Song.cpp"/>
       <FILE id="VOHnLB" name="Song.h" compile="0" resource="0" file="Source/Song.h"/>
       <FILE id="PXiFB5" name="WaveformControls.cpp" compile="1" resource="0"
